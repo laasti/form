@@ -5,8 +5,10 @@ return [
         'main'
     ],
     'groups' => [
-        'label' => 'Main section',
-        'attributes' => []
+        'main' => [
+            'label' => 'Main section',
+            'attributes' => []
+        ]
     ],
     'fields' => [
         //Full config
@@ -18,12 +20,6 @@ return [
             'group' => 'main',
             'choices' => [
                 'Test', 'Test 2'
-            ],
-            'errors' => [
-                'My error'
-            ],
-            'rules' => [
-                'some-rules'
             ],
             'attributes' => [
                 'class' => 'my-class'

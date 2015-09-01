@@ -287,12 +287,22 @@ class Form
     public function setData($data)
     {
         $this->data = $data;
+        foreach ($data as $fieldname => $fielddata) {
+            if (isset($this->fields[$fieldname])) {
+                $this->fields[$fieldname]->setValue($fielddata); 
+            }
+        }
         return $this;
     }
 
     public function setErrors($errors)
     {
         $this->errors = $errors;
+        foreach ($errors as $fieldname => $fielderrors) {
+            if (isset($this->fields[$fieldname])) {
+                $this->fields[$fieldname]->setErrors($fielderrors); 
+            }
+        }
         return $this;
     }
 

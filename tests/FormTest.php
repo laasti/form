@@ -91,5 +91,15 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(count($subgroups[2]->getFields()) === 0);
         $this->assertTrue(count($subgroups[2]->getGroups()[0]->getFields()) === 1);
     }
+    
+    public function testFromConfig()
+    {
+        $form = \Laasti\Form\FormFactory::createFromConfig(require 'config.php');
+
+        $this->assertTrue(count($form->getFields()) === 1);
+        $this->assertTrue(count($form->getAllFields()) === 2);
+        $this->assertTrue(count($form->getGroups()) === 1);
+        $this->assertEquals($form->getGroups()[0]->getLabel(), 'Main section');
+    }
 
 }
