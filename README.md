@@ -12,9 +12,23 @@ Forms have groups containing multiple fields.
 
 ```php
 
-$form = new Laasti\Form\Form($method, $action, $attributes, $data, $errors, $rules);
-$form->addField('text', 'field', 'Label', 'group', [/*input attributes*/], [/*row attributes*/]);
-$form->setLayout([
+$form = new Laasti\Form\Form($data, $errors, $rules);
+$form->setMethod('post'); //Defaults to post
+$form->setAction('url');
+$form->setAttributes([/*html attributes*/]);
+$form->addField('text', 'field', 'Label', [/*choices*/], 'group', [/*input attributes*/], [/*row attributes*/]);
+$form->removeField('field');
+$form->removeGroup('group');
+$form->setGroup('field', 'group');
+$form->setLabel('field', 'Label');
+$form->setType('field', 'type');
+$form->setAttributes('field', [/*attributes*/]);
+$form->setContainerAttributes('field', [/*attributes*/]);
+$form->setData([]);
+$form->setErrors([]);
+$form->setRules([]);
+$form->setGroupsLayout([
+    'top',
     'main' => ['column1', 'column2'],
     'secondary' => ['side', 'wide'],
     'multi-level' => [
@@ -29,21 +43,22 @@ Then in your view:
 
 ```php
 
-$form->action(); //Get form action attribute
-$form->method(); //Get form method
-$form->attributes(); //Get form attributes
-$form->fields(); //All fields without groups
-$group = array_shift($form->groups()); //Array of first level groups
-$group->label();
-$group->attributes();
-$group->groups(); //Array of subgroups
-$field = array_shift($group->fields()); //Array of fields in group
-$field->label();
-$field->name();
-$field->group();
-$field->choices();
-$field->attributes();
-$field->containerAttributes();
+$form->getAction(); //Get form action attribute
+$form->getMethod(); //Get form method
+$form->getFormAttributes(); //Get form attributes
+$form->getAllFields(); //All fields without groups
+$form->getFields(); //Just fields without groups
+$group = array_shift($form->getGroups()); //Array of first level groups
+$group->getLabel();
+$group->getAttributes();
+$group->getGroups(); //Array of subgroups
+$field = array_shift($group->getFields()); //Array of fields in group
+$field->getLabel();
+$field->getName();
+$field->getGroup();
+$field->getChoices();
+$field->getAttributes();
+$field->getContainerAttributes();
 
 ```
 
