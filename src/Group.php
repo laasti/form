@@ -19,7 +19,7 @@ class Group
     {
         $this->name = $name;
         $this->label = $label;
-        $this->attributes = $attributes;
+        $this->attributes = new Attributes($attributes);
     }
 
     public function addField(Field $field)
@@ -85,21 +85,19 @@ class Group
 
     public function setAttribute($attribute, $value)
     {
-        $this->attributes[$attribute] = $value;
+        $this->attributes->setAttribute($attribute, $value);
         return $this;
     }
     
     public function removeAttribute($attribute)
     {
-        if (isset($this->attributes[$attribute])) {
-            unset($this->attributes[$attribute]);
-        }
+        $this->attributes->removeAttribute($attribute);
         return $this;
     }
 
     public function setAttributes($attributes)
     {
-        $this->attributes = $attributes;
+        $this->attributes->setAttributes($attributes);
         return $this;
     }
 

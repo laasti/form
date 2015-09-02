@@ -27,8 +27,8 @@ class Field
         $this->label = $label;
         $this->choices = $choices;
         $this->group = $group;
-        $this->attributes = $attributes;
-        $this->containerAttributes = $containerAttributes;
+        $this->attributes = new Attributes($attributes);
+        $this->containerAttributes = new Attributes($containerAttributes);
     }
 
     public function getType()
@@ -138,41 +138,37 @@ class Field
 
     public function setAttribute($attribute, $value)
     {
-        $this->attributes[$attribute] = $value;
+        $this->attributes->setAttribute($attribute, $value);
         return $this;
     }
 
     public function removeAttribute($attribute)
     {
-        if (isset($this->attributes[$attribute])) {
-            unset($this->attributes[$attribute]);
-        }
+        $this->attributes->removeAttribute($attribute);
         return $this;
     }
 
     public function setAttributes($attributes)
     {
-        $this->attributes = $attributes;
+        $this->attributes->setAttributes($attributes);
         return $this;
     }
 
     public function setContainerAttribute($attribute, $value)
     {
-        $this->containerAttributes[$attribute] = $value;
+        $this->containerAttributes->setAttribute($attribute, $value);
         return $this;
     }
 
     public function removeContainerAttribute($attribute)
     {
-        if (isset($this->containerAttributes[$attribute])) {
-            unset($this->containerAttributes[$attribute]);
-        }
+        $this->containerAttributes->removeAttribute($attribute);
         return $this;
     }
 
     public function setContainerAttributes($containerAttributes)
     {
-        $this->containerAttributes = $containerAttributes;
+        $this->containerAttributes->setAttributes($containerAttributes);
         return $this;
     }
 

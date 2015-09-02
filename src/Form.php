@@ -13,7 +13,7 @@ class Form
 
     protected $method = 'post';
     protected $action = '';
-    protected $formAttributes = [];
+    protected $formAttributes;
     protected $data = [];
     protected $errors = [];
     protected $fields = [];
@@ -25,6 +25,7 @@ class Form
     {
         $this->data = $data;
         $this->errors = $errors;
+        $this->formAttributes = new Attributes();
     }
 
     public function addField($type, $name, $label = null, $choices = [], $group = null, $attributes = [], $containerAttributes = [])
@@ -266,21 +267,19 @@ class Form
 
     public function setFormAttribute($attribute, $value)
     {
-        $this->formAttributes[$attribute] = $value;
+        $this->formAttributes->setAttribute($attribute, $value);
         return $this;
     }
 
     public function removeFormAttribute($attribute)
     {
-        if (isset($this->formAttributes[$attribute])) {
-            unset($this->formAttributes[$attribute]);
-        }
+        $this->formAttributes->removeAttribute($attribute);
         return $this;
     }
 
     public function setFormAttributes($attributes)
     {
-        $this->formAttributes = $attributes;
+        $this->formAttributes->setAttributes($attributes);
         return $this;
     }
 
