@@ -41,7 +41,6 @@ class FormFactory
                 if (!isset($data[$name]) && !is_null($default)) {
                     $data[$name] = $default;
                 }
-                
                 $field = $form->addField($type, $name, $label, $choices, $group, $attributes, $container_attributes);
             }
             

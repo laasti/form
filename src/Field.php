@@ -19,6 +19,7 @@ class Field
     protected $choices;
     protected $attributes;
     protected $containerAttributes;
+    protected $factoryClass = 'Laasti\Form\ElementsGenerator';
 
     public function __construct($type, $name, $label, $choices = [], $group = null, $attributes = [], $containerAttributes = [])
     {
@@ -53,6 +54,7 @@ class Field
 
     public function getAttributes()
     {
+        $this->getId();
         return $this->attributes;
     }
 
@@ -71,6 +73,11 @@ class Field
         return $this->value;
     }
 
+    public function getControl()
+    {
+        return call_user_func_array([$this->factoryClass, 'render'.ucfirst($this->getType())], [$this]);
+    }
+
     public function getError()
     {
         if (empty($this->errors)) {
@@ -78,6 +85,26 @@ class Field
         }
         $keys = array_keys($this->errors);
         return $this->errors[array_shift($keys)];
+    }
+
+    public function isButton()
+    {
+        return in_array($this->getType(), ['reset', 'submit', 'button']);
+    }
+
+    public function hasFakeLabel()
+    {
+        return in_array($this->getType(), ['radio']) || ($this->getType() === 'checkbox' && count($this->getChoices()) > 1);
+    }
+
+    public function hasLabel()
+    {
+        return !in_array($this->getType(), ['hidden', 'reset', 'submit', 'button', 'image', 'meter', 'progress', 'radio','checkbox']) || ($this->getType() === 'checkbox' && count($this->getChoices()) < 2);
+    }
+
+    public function hasNoLabel()
+    {
+        return in_array($this->getType(), ['hidden', 'submit', 'button', 'image', 'meter', 'progress']);
     }
 
     public function getErrors()
@@ -101,7 +128,7 @@ class Field
 
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->value = htmlspecialchars((string)$value, ENT_QUOTES);
         return $this;
     }
 

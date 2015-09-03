@@ -66,38 +66,47 @@ class ElementsGenerator
 
     public static function renderCheckbox(Field $field)
     {
-        if (empty($field->getChoices())) {
+        if (!count($field->getChoices())) {
             return self::renderInput($field);
         }
 
         $html = '';
         $values = is_array($field->getValue()) ? $field->getValue() : [$field->getValue()];
+        $cpt = 0;
         foreach ($field->getChoices() as $value => $label) {
             $checked = in_array($value, $values) ? ' checked="checked" ' : '';
-            $html .= sprintf('<label><input type="checkbox" name="%s" value="%s" %s %s /> <span class="checkbox-choice-label">%s</span></label>', $field->getName(), $value, $checked, $field->getAttributes(), $label).PHP_EOL;
+            $attributes = clone $field->getAttributes();
+            $attributes->setAttribute('id', $attributes->getAttribute('id').'_'.$cpt);
+            $html .= sprintf('<li><input type="checkbox" name="%s" value="%s" %s %s /> <label for="%s">%s</label></li>', $field->getName(), $value, $checked, $attributes, $attributes->getAttribute('id'), $label).PHP_EOL;
+            $cpt++;
         }
 
-        return self::renderInput($field);
+        return empty($html) ? '' : '<ul id="'.$field->getId().'">'.$html.'</ul>';
     }
 
     public static function renderRadio(Field $field)
     {
-        if (empty($field->getChoices())) {
+        if (!count($field->getChoices())) {
             return self::renderInput($field);
         }
 
         $html = '';
+        $cpt = 0;
         foreach ($field->getChoices() as $value => $label) {
             $checked = $value == $field->getValue() ? ' checked="checked" ' : '';
-            $html .= sprintf('<label><input type="radio" name="%s" value="%s" %s %s /> <span class="radio-choice-label">%s</span></label>', $field->getName(), $value, $checked, $field->getAttributes(), $label).PHP_EOL;
+            $attributes = clone $field->getAttributes();
+            $attributes->setAttribute('id', $attributes->getAttribute('id').'_'.$cpt);
+            $html .= sprintf('<li><input type="radio" name="%s" value="%s" %s %s /> <label for="%s">%s</label></li>', $field->getName(), $value, $checked, $attributes, $attributes->getAttribute('id'), $label).PHP_EOL;
+            $cpt++;
         }
 
-        return $html;
+        return empty($html) ? '' : '<ul id="'.$field->getId().'">'.$html.'</ul>';
     }
 
     public static function renderFile(Field $field)
     {
-        return self::renderInput($field).sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $field->getValue());
+        return sprintf('<input type="%s" name="%s" %s />', $field->getType(), $field->getName(), $field->getAttributes())
+                .sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $field->getValue());
     }
 
     public static function renderSubmit(Field $field)

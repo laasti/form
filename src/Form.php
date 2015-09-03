@@ -20,6 +20,7 @@ class Form
     protected $groups = [];
     protected $rootGroups = [];
     protected $groupsLayout;
+    protected $fileFields = [];
 
     public function __construct($data, $errors = [])
     {
@@ -30,10 +31,12 @@ class Form
 
     public function addField($type, $name, $label = null, $choices = [], $group = null, $attributes = [], $containerAttributes = [])
     {
+        if ($type === 'file') {
+            $this->fileFields[] = $name;
+        }
         if (isset($this->fields[$name])) {
             throw new \RuntimeException('The field "' . $name . '" is already defined.');
         }
-
         $group = is_null($group) ? self::DEFAULT_GROUP : $group;
         $this->fields[$name] = new Field($type, $name, $label, $choices, $group, $attributes, $containerAttributes);
         $this->fields[$name]->setValue($this->getData($name));
@@ -49,7 +52,9 @@ class Form
             $this->defineGroup($group, '', []);
         }
 
+        //Remove from old group
         $this->groups[$this->fields[$fieldname]->getGroup()]->removeField($fieldname);
+        //Add to new group
         $this->fields[$fieldname]->setGroup($group);
         $this->groups[$group]->addField($this->fields[$fieldname]);
 
@@ -64,6 +69,9 @@ class Form
 
         $group = $this->fields[$fieldname]->getGroup();
         $this->groups[$group]->removeField($fieldname);
+        if ($this->fields[$fieldname]->getType() === 'file') {
+            unset($this->fileFields[array_search($fieldname, $this->fileFields)]);
+        }
         unset($this->fields[$fieldname]);
 
         return $this;
@@ -75,6 +83,9 @@ class Form
             throw new \OutOfBoundsException('The group "' . $group . '" does not exist.');
         }
         foreach ($this->groups[$group]->getFields() as $fieldname => $field) {
+            if ($this->fields[$fieldname]->getType() === 'file') {
+                unset($this->fileFields[array_search($fieldname, $this->fileFields)]);
+            }
             unset($this->fields[$fieldname]);
         }
         unset($this->groups[$group]);
@@ -189,7 +200,12 @@ class Form
 
     public function defineGroup($group, $label, $attributes = [])
     {
-        $this->groups[$group] = new Group($group, $label, $attributes);
+        if (isset($this->groups[$group])) {
+            $this->groups[$group]->setLabel($label);
+            $this->groups[$group]->setAttributes($attributes);
+        } else {
+            $this->groups[$group] = new Group($group, $label, $attributes);
+        }
 
         return $this;
     }
@@ -234,6 +250,9 @@ class Form
 
     public function getFormAttributes()
     {
+        if (count($this->fileFields)) {
+            $this->formAttributes->setAttribute('enctype', 'multipart/form-data');
+        }
         return $this->formAttributes;
     }
 
