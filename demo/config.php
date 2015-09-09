@@ -129,6 +129,12 @@ return [
         ],
         [
             'type' => 'checkbox',
+            'name' => 'checkbox',
+            'group' => 'main',
+            'label' => 'Checkbox',
+        ],
+        [
+            'type' => 'checkbox',
             'name' => 'multi_checkbox',
             'group' => 'main',
             'label' => 'Multi checkbox',

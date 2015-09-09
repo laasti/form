@@ -120,6 +120,18 @@ class Field
         return  $this->attributes['id'];
     }
 
+    public function getFactoryClass()
+    {
+        return $this->factoryClass;
+    }
+
+    public function setFactoryClass($factoryClass)
+    {
+        $this->factoryClass = $factoryClass;
+        return $this;
+    }
+
+    
     public function setErrors($errors)
     {
         $this->errors = $errors;
