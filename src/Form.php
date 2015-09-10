@@ -231,7 +231,9 @@ class Form
     public function getGroups()
     {
         if (is_null($this->groupsLayout)) {
-            return array_values($this->groups);
+            $groups = $this->groups;
+            unset($groups[self::DEFAULT_GROUP]);
+            return array_values($groups);
         }
 
         $this->arrangeGroupsByLayout();
@@ -307,7 +309,7 @@ class Form
         $this->data = $data;
         foreach ($data as $fieldname => $fielddata) {
             if (isset($this->fields[$fieldname])) {
-                $this->fields[$fieldname]->setValue($fielddata); 
+                $this->fields[$fieldname]->setValue($fielddata);
             }
         }
         return $this;
@@ -318,7 +320,7 @@ class Form
         $this->errors = $errors;
         foreach ($errors as $fieldname => $fielderrors) {
             if (isset($this->fields[$fieldname])) {
-                $this->fields[$fieldname]->setErrors($fielderrors); 
+                $this->fields[$fieldname]->setErrors($fielderrors);
             }
         }
         return $this;
