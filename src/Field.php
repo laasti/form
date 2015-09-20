@@ -224,4 +224,18 @@ class Field
         return $this;
     }
 
+    public function __isset($name)
+    {
+        return method_exists($this, 'get' . ucfirst($name));
+    }
+
+    public function __get($name)
+    {
+        if (method_exists($this, 'get' . ucfirst($name))) {
+            return call_user_func([$this, 'get' . ucfirst($name)]);
+        }
+
+        return null;
+    }
+
 }

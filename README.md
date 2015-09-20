@@ -60,6 +60,10 @@ $field->getChoices();
 $field->getAttributes();
 $field->getContainerAttributes();
 
+//OR you can use magic properties instead of lengthy getters in views
+$field->choices;
+$field->containerAttributes;
+
 ```
 
 ## Contributing

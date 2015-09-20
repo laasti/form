@@ -17,7 +17,9 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $fields = $form->getFields();
         $field = array_shift($fields);
 
+        $this->assertTrue($form->getAction() === $form->action);
         $this->assertTrue($field->getValue() === 'Test');
+        $this->assertTrue($field->getValue() === $field->value);
         $this->assertTrue(count($field->getErrors()) === 2);
         $this->assertTrue($field->getError() === 'Non valide');
     }
@@ -81,6 +83,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $groups = $form->getGroups();
         $this->assertTrue(count($groups) === 1);
         $this->assertTrue(count($groups[0]->getFields()) === 2);
+        $this->assertTrue($groups[0]->getName() === $groups[0]->name);
         $subgroups = $groups[0]->getGroups();
         $this->assertTrue(count($subgroups) === 3);
         $this->assertTrue(count($subgroups[0]->getGroups()) === 0);
