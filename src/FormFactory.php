@@ -34,6 +34,7 @@ class FormFactory
                     'choices' => [],
                     'errors' => [],
                     'attributes' => [],
+                    'required' => false,
                     'container_attributes' => [],
                     'html' => null
                 ];
@@ -41,6 +42,9 @@ class FormFactory
                 
                 if (!isset($data[$name]) && !is_null($default)) {
                     $data[$name] = $default;
+                }
+                if ($required) {
+                    $attributes["required"] = "required";
                 }
                 $field = $form->addField($type, $name, $label, $choices, $group, $attributes, $container_attributes, $html);
             }

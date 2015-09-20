@@ -64,6 +64,11 @@ $field->getContainerAttributes();
 $field->choices;
 $field->containerAttributes;
 
+//There are some magic properties as well
+$field->isRequired;//Checks if required exists in $field->attributes
+$field->is{Name};//If you want to identify a field by its name
+$field->is{Type};//If you want to check a field's type
+
 ```
 
 ## Contributing

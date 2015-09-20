@@ -57,6 +57,9 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($field->getChoices()['us'] === 'United States');
         $this->assertTrue($field->getAttributes()['class'] === 'my-class2');
         $this->assertTrue($field->getContainerAttributes()['class'] === 'container2');
+        $this->assertTrue($field->isRequired === false);
+        $this->assertTrue($field->isCountry === true);
+        $this->assertTrue($field->isText === true);
     }
 
     public function testGroupsLayout()

@@ -233,6 +233,12 @@ class Field
     {
         if (method_exists($this, 'get' . ucfirst($name))) {
             return call_user_func([$this, 'get' . ucfirst($name)]);
+        } else if ($name === 'isRequired') {
+            return isset($this->attributes['required']);
+        } else if (lcfirst(str_replace('is', '', $name)) === $this->getType()) {
+            return true;
+        } else if (lcfirst(str_replace('is', '', $name)) === $this->getName()) {
+            return true;
         }
 
         return null;
