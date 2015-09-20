@@ -1,6 +1,18 @@
 <?php
 
 return [
+    'defaults' => [
+        'groups' => [
+            'attributes' => [
+                'class' => 'form-group'
+            ]
+        ],
+        'fields' => [
+            'container_attributes' => [
+                'class' => 'form-field form-field-{type}'
+            ]
+        ]
+    ],
     'layout' => [
         'main'
     ],
@@ -18,6 +30,7 @@ return [
             'label' => 'Label',
             'default' => 'no test',
             'group' => 'main',
+            'required' => true,
             'choices' => [
                 'Test', 'Test 2'
             ],
