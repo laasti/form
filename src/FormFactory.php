@@ -35,13 +35,14 @@ class FormFactory
                     'errors' => [],
                     'attributes' => [],
                     'container_attributes' => [],
+                    'html' => null
                 ];
                 extract($fc);
                 
                 if (!isset($data[$name]) && !is_null($default)) {
                     $data[$name] = $default;
                 }
-                $field = $form->addField($type, $name, $label, $choices, $group, $attributes, $container_attributes);
+                $field = $form->addField($type, $name, $label, $choices, $group, $attributes, $container_attributes, $html);
             }
             
             $form->setData($data);

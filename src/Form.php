@@ -29,7 +29,7 @@ class Form
         $this->formAttributes = new Attributes();
     }
 
-    public function addField($type, $name, $label = null, $choices = [], $group = null, $attributes = [], $containerAttributes = [])
+    public function addField($type, $name, $label = null, $choices = [], $group = null, $attributes = [], $containerAttributes = [], $html = null)
     {
         if ($type === 'file') {
             $this->fileFields[] = $name;
@@ -38,7 +38,7 @@ class Form
             throw new \RuntimeException('The field "' . $name . '" is already defined.');
         }
         $group = is_null($group) ? self::DEFAULT_GROUP : $group;
-        $this->fields[$name] = new Field($type, $name, $label, $choices, $group, $attributes, $containerAttributes);
+        $this->fields[$name] = new Field($type, $name, $label, $choices, $group, $attributes, $containerAttributes, $html);
         $this->fields[$name]->setValue($this->getData($name));
         $this->fields[$name]->setErrors($this->getErrors($name));
         $this->setGroup($name, $group);

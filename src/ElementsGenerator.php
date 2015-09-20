@@ -172,6 +172,10 @@ class ElementsGenerator
     {
         return sprintf('<meter value="%s" %s>%s</meter>', $field->getValue(), $field->getAttributes(), $field->getLabel());
     }
+    public static function renderHtml(Field $field)
+    {
+        return $field->getValue();
+    }
     
     protected static function renderInput(Field $field)
     {

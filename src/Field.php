@@ -17,19 +17,22 @@ class Field
     protected $value;
     protected $errors;
     protected $choices;
+    protected $html;
     protected $attributes;
     protected $containerAttributes;
     protected $factoryClass = 'Laasti\Form\ElementsGenerator';
 
-    public function __construct($type, $name, $label, $choices = [], $group = null, $attributes = [], $containerAttributes = [])
+    public function __construct($type, $name, $label, $choices = [], $group = null, $attributes = [], $containerAttributes = [], $html = null)
     {
         $this->type = $type;
         $this->name = $name;
         $this->label = $label;
         $this->choices = $choices;
         $this->group = $group;
+        $this->html = $html;
         $this->attributes = new Attributes($attributes);
         $this->containerAttributes = new Attributes($containerAttributes);
+        //$this->containerAttributes->setAttribute('class', 'form-field form-field-'.$type);
     }
 
     public function getType()
@@ -50,6 +53,11 @@ class Field
     public function getGroup()
     {
         return $this->group;
+    }
+
+    public function getHtml()
+    {
+        return $this->hmtl;
     }
 
     public function getAttributes()
@@ -75,7 +83,7 @@ class Field
 
     public function getControl()
     {
-        return call_user_func_array([$this->factoryClass, 'render'.ucfirst($this->getType())], [$this]);
+        return !is_null($this->html) ? $this->html : call_user_func_array([$this->factoryClass, 'render'.ucfirst($this->getType())], [$this]);
     }
 
     public function getError()
@@ -154,6 +162,11 @@ class Field
     public function setType($type)
     {
         $this->type = $type;
+        return $this;
+    }
+    public function setHtml($html)
+    {
+        $this->html = $html;
         return $this;
     }
 
