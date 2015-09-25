@@ -261,7 +261,16 @@ class Form
     public function getData($fieldname = null)
     {
         if (!is_null($fieldname)) {
-            return isset($this->data[$fieldname]) ? $this->data[$fieldname] : null;
+            $keys = $this->convertToKeys($fieldname);
+            $data = $this->data;
+            foreach ($keys as $key) {
+                if (isset($data[$key])) {
+                    $data = $data[$key];
+                } else {
+                    return null;
+                }
+            }
+            return $data;
         }
         return $this->data;
     }
@@ -371,6 +380,13 @@ class Form
         }
     }
 
+    protected function convertToKeys($field)
+    {
+        $matches = [];
+        preg_match_all('#\[?([^\[\]]+)\]?#', $field, $matches);
+        return $matches[1];
+    }
+
     public function __isset($name)
     {
         return method_exists($this, 'get' . ucfirst($name));
@@ -384,4 +400,5 @@ class Form
 
         return null;
     }
+
 }

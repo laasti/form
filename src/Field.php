@@ -148,7 +148,7 @@ class Field
 
     public function setValue($value)
     {
-        $this->value = htmlspecialchars((string)$value, ENT_QUOTES);
+        $this->value = is_array($value) ? $value : htmlspecialchars((string)$value, ENT_QUOTES);
         return $this;
     }
 
