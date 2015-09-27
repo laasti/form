@@ -105,8 +105,19 @@ class ElementsGenerator
 
     public static function renderFile(Field $field)
     {
-        return sprintf('<input type="%s" name="%s" %s />', $field->getType(), $field->getName(), $field->getAttributes())
+        if (strpos($field->getName(), '[]') || is_array($field->getValue())) {
+            $field->setAttribute('multiple', 'multiple');
+            $inputs = sprintf('<input type="file" name="%s" %s />', $field->getName(), $field->getAttributes());
+            if (is_array($field->getValue())) {
+                foreach ($field->getValue() as $file) {
+                     $inputs .= sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $file);
+                }
+            }
+            return $inputs;
+        } else {
+        return sprintf('<input type="file" name="%s" %s />', $field->getName(), $field->getAttributes())
                 .sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $field->getValue());
+        }
     }
 
     public static function renderSubmit(Field $field)
