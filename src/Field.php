@@ -226,7 +226,7 @@ class Field
 
     public function __isset($name)
     {
-        return method_exists($this, 'get' . ucfirst($name));
+        return method_exists($this, 'get' . ucfirst($name)) || in_array($name, ['isRequired', 'is'.  ucfirst($this->getType()), 'is'.  ucfirst($this->getName())]);
     }
 
     public function __get($name)
