@@ -225,9 +225,9 @@ class Form
 
     public function getFields()
     {
-        return array_values($this->groups[self::DEFAULT_GROUP]->getFields());
+        return isset($this->groups[self::DEFAULT_GROUP]) ? array_values($this->groups[self::DEFAULT_GROUP]->getFields()) : [];
     }
-
+    
     public function getGroups()
     {
         if (is_null($this->groupsLayout)) {
