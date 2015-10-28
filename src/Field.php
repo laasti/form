@@ -123,7 +123,7 @@ class Field
     public function getId()
     {
         if (!isset($this->attributes['id'])) {
-            $this->attributes['id'] = uniqid(str_replace(['[', ']'], '_', $this->name), true);
+            $this->attributes['id'] = str_replace('.', '-', uniqid(str_replace(['[', ']'], '_', $this->name), true));
         }
         return  $this->attributes['id'];
     }
