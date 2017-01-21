@@ -14,6 +14,12 @@ class ElementsGenerator
         return self::renderInput($field);
     }
 
+    protected static function renderInput(Field $field)
+    {
+        return sprintf('<input type="%s" name="%s" value="%s" %s />', $field->getType(), $field->getName(),
+            $field->getValue(), $field->getAttributes());
+    }
+
     public static function renderHidden(Field $field)
     {
         return self::renderInput($field);
@@ -76,12 +82,14 @@ class ElementsGenerator
         foreach ($field->getChoices() as $value => $label) {
             $checked = in_array($value, $values) ? ' checked="checked" ' : '';
             $attributes = clone $field->getAttributes();
-            $attributes->setAttribute('id', $attributes->getAttribute('id').'_'.$cpt);
-            $html .= sprintf('<li><input type="checkbox" name="%s" value="%s" %s %s /> <label for="%s">%s</label></li>', $field->getName(), $value, $checked, $attributes, $attributes->getAttribute('id'), $label).PHP_EOL;
+            $attributes->setAttribute('id', $attributes->getAttribute('id') . '_' . $cpt);
+            $html .= sprintf('<li><input type="checkbox" name="%s" value="%s" %s %s /> <label for="%s">%s</label></li>',
+                    $field->getName(), $value, $checked, $attributes, $attributes->getAttribute('id'),
+                    $label) . PHP_EOL;
             $cpt++;
         }
 
-        return empty($html) ? '' : '<ul id="'.$field->getId().'">'.$html.'</ul>';
+        return empty($html) ? '' : '<ul id="' . $field->getId() . '">' . $html . '</ul>';
     }
 
     public static function renderRadio(Field $field)
@@ -95,12 +103,14 @@ class ElementsGenerator
         foreach ($field->getChoices() as $value => $label) {
             $checked = $value == $field->getValue() ? ' checked="checked" ' : '';
             $attributes = clone $field->getAttributes();
-            $attributes->setAttribute('id', $attributes->getAttribute('id').'_'.$cpt);
-            $html .= sprintf('<li><input type="radio" name="%s" value="%s" %s %s /> <label for="%s">%s</label></li>', $field->getName(), $value, $checked, $attributes, $attributes->getAttribute('id'), $label).PHP_EOL;
+            $attributes->setAttribute('id', $attributes->getAttribute('id') . '_' . $cpt);
+            $html .= sprintf('<li><input type="radio" name="%s" value="%s" %s %s /> <label for="%s">%s</label></li>',
+                    $field->getName(), $value, $checked, $attributes, $attributes->getAttribute('id'),
+                    $label) . PHP_EOL;
             $cpt++;
         }
 
-        return empty($html) ? '' : '<ul id="'.$field->getId().'">'.$html.'</ul>';
+        return empty($html) ? '' : '<ul id="' . $field->getId() . '">' . $html . '</ul>';
     }
 
     public static function renderFile(Field $field)
@@ -110,19 +120,25 @@ class ElementsGenerator
             $inputs = sprintf('<input type="file" name="%s" %s />', $field->getName(), $field->getAttributes());
             if (is_array($field->getValue())) {
                 foreach ($field->getValue() as $file) {
-                     $inputs .= sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $file);
+                    $inputs .= sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $file);
                 }
             }
             return $inputs;
         } else {
-        return sprintf('<input type="file" name="%s" %s />', $field->getName(), $field->getAttributes())
-                .sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $field->getValue());
+            return sprintf('<input type="file" name="%s" %s />', $field->getName(), $field->getAttributes())
+                . sprintf('<input type="hidden" name="%s" value="%s" />', $field->getName(), $field->getValue());
         }
     }
 
     public static function renderSubmit(Field $field)
     {
         return self::renderButtonInput($field);
+    }
+
+    protected static function renderButtonInput(Field $field)
+    {
+        return sprintf('<button type="%s" name="%s" value="%s" %s>%s</button>', $field->getType(), $field->getName(),
+            $field->getValue(), $field->getAttributes(), $field->getLabel());
     }
 
     public static function renderImage(Field $field)
@@ -142,7 +158,8 @@ class ElementsGenerator
 
     public static function renderTextarea(Field $field)
     {
-        return sprintf('<textarea name="%s" %s>%s</textarea>', $field->getName(), $field->getAttributes(), $field->getValue());
+        return sprintf('<textarea name="%s" %s>%s</textarea>', $field->getName(), $field->getAttributes(),
+            $field->getValue());
     }
 
     public static function renderSelect(Field $field)
@@ -156,46 +173,43 @@ class ElementsGenerator
         $select = sprintf('<select name="%s" %s>', $field->getName(), $field->getAttributes());
         foreach ($field->getChoices() as $value => $choice) {
             if (is_array($choice)) {
-                if (empty($choice)) {continue;}
+                if (empty($choice)) {
+                    continue;
+                }
                 $select .= sprintf('<optgroup label="%s">', $value);
                 foreach ($choice as $subvalue => $subchoice) {
-                    $select .= sprintf('<option value="%s" %s>%s</option>', $subvalue, in_array($subvalue, $selected) ? ' selected="selected"' : '', $subchoice);
+                    $select .= sprintf('<option value="%s" %s>%s</option>', $subvalue,
+                        in_array($subvalue, $selected) ? ' selected="selected"' : '', $subchoice);
                 }
                 $select .= '</optgroup>';
             } else {
-                $select .= sprintf('<option value="%s" %s>%s</option>', $value, in_array($value, $selected) ? ' selected="selected"' : '', $choice);
+                $select .= sprintf('<option value="%s" %s>%s</option>', $value,
+                    in_array($value, $selected) ? ' selected="selected"' : '', $choice);
             }
         }
-        return $select.'</select>';
+        return $select . '</select>';
     }
 
     public static function renderOutput(Field $field)
     {
-        return sprintf('<output name="%s" %s>%s</output>', $field->getName(), $field->getAttributes(), $field->getValue());
+        return sprintf('<output name="%s" %s>%s</output>', $field->getName(), $field->getAttributes(),
+            $field->getValue());
     }
 
     public static function renderProgress(Field $field)
     {
-        return sprintf('<progress value="%s" %s>%s</progress>', $field->getValue(), $field->getAttributes(), $field->getLabel());
+        return sprintf('<progress value="%s" %s>%s</progress>', $field->getValue(), $field->getAttributes(),
+            $field->getLabel());
     }
 
     public static function renderMeter(Field $field)
     {
-        return sprintf('<meter value="%s" %s>%s</meter>', $field->getValue(), $field->getAttributes(), $field->getLabel());
+        return sprintf('<meter value="%s" %s>%s</meter>', $field->getValue(), $field->getAttributes(),
+            $field->getLabel());
     }
+
     public static function renderHtml(Field $field)
     {
         return $field->getValue();
     }
-    
-    protected static function renderInput(Field $field)
-    {
-        return sprintf('<input type="%s" name="%s" value="%s" %s />', $field->getType(), $field->getName(), $field->getValue(), $field->getAttributes());
-    }
-
-    protected static function renderButtonInput(Field $field)
-    {
-        return sprintf('<button type="%s" name="%s" value="%s" %s>%s</button>', $field->getType(), $field->getName(), $field->getValue(), $field->getAttributes(), $field->getLabel());
-    }
-
 }

@@ -1,92 +1,81 @@
-# Laasti/form
+# Laasti / Form
 
-## Installation
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-downloads]
+
+This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
+PSRs you support to avoid any confusion with users and contributors.
+
+## Structure
+
+If any of the following are applicable to your project, then the directory structure should follow industry best practises by being named the following.
 
 ```
-composer require laasti/form
+bin/        
+config/
+src/
+tests/
+vendor/
+```
+
+
+## Install
+
+Via Composer
+
+``` bash
+$ composer require laasti/form
 ```
 
 ## Usage
 
-Forms have groups containing multiple fields.
-
-```php
-
-$form = new Laasti\Form\Form($data, $errors, $rules);
-$form->setMethod('post'); //Defaults to post
-$form->setAction('url');
-$form->setAttributes([/*html attributes*/]);
-$form->addField('text', 'field', 'Label', [/*choices*/], 'group', [/*input attributes*/], [/*row attributes*/]);
-$form->removeField('field');
-$form->removeGroup('group');
-$form->setGroup('field', 'group');
-$form->setLabel('field', 'Label');
-$form->setType('field', 'type');
-$form->setAttributes('field', [/*attributes*/]);
-$form->setContainerAttributes('field', [/*attributes*/]);
-$form->setData([]);
-$form->setErrors([]);
-$form->setRules([]);
-$form->setGroupsLayout([
-    'top',
-    'main' => ['column1', 'column2'],
-    'secondary' => ['side', 'wide'],
-    'multi-level' => [
-        'subsection' => ['sub-column1', 'sub-column2'],
-        'subsection2'
-    ]
-]);
-$form->defineGroup('group', 'Title', [/*attributes*/]);
+``` php
+$skeleton = new League\Skeleton();
+echo $skeleton->echoPhrase('Hello, League!');
 ```
 
-Then in your view:
+## Change log
 
-```php
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-$form->getAction(); //Get form action attribute
-$form->getMethod(); //Get form method
-$form->getFormAttributes(); //Get form attributes
-$form->getAllFields(); //All fields without groups
-$form->getFields(); //Just fields without groups
-$group = array_shift($form->getGroups()); //Array of first level groups
-$group->getLabel();
-$group->getAttributes();
-$group->getGroups(); //Array of subgroups
-$field = array_shift($group->getFields()); //Array of fields in group
-$field->getLabel();
-$field->getName();
-$field->getGroup();
-$field->getChoices();
-$field->getAttributes();
-$field->getContainerAttributes();
+## Testing
 
-//OR you can use magic properties instead of lengthy getters in views
-$field->choices;
-$field->containerAttributes;
-
-//There are some magic properties as well
-$field->isRequired;//Checks if required exists in $field->attributes
-$field->is{Name};//If you want to identify a field by its name
-$field->is{Type};//If you want to check a field's type
-
+``` bash
+$ composer test
 ```
 
 ## Contributing
 
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
-## History
+## Security
 
-See CHANGELOG.md for more information.
+If you discover any security related issues, please email contact@nebulousweb.com instead of using the issue tracker.
 
 ## Credits
 
-Author: Sonia Marquette (@nebulousGirl)
+- [Sonia Marquette][link-author]
+- [All Contributors][link-contributors]
 
 ## License
 
-Released under the MIT License. See LICENSE.txt file.
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/laasti/form.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/laasti/form/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/laasti/form.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/laasti/form.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/laasti/form.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/laasti/form
+[link-travis]: https://travis-ci.org/laasti/form
+[link-scrutinizer]: https://scrutinizer-ci.com/g/laasti/form/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/laasti/form
+[link-downloads]: https://packagist.org/packages/laasti/form
+[link-author]: https://github.com/nebulousGirl
+[link-contributors]: ../../contributors

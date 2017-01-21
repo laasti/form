@@ -13,7 +13,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $form = new \Laasti\Form\Form(['field1' => 'Test'], ['field1' => ['Non valide', 'required']]);
         $form->addField('text', 'field1', 'Test Field');
-        
+
         $fields = $form->getFields();
         $field = array_shift($fields);
 
@@ -28,8 +28,13 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $form = new \Laasti\Form\Form([]);
         $form->addField(
-                'select', 'country', 'Country', ['ca' => 'Canada'], 'group1',
-                ['class' => 'my-class'], ['class' => 'container']
+            'select',
+            'country',
+            'Country',
+            ['ca' => 'Canada'],
+            'group1',
+            ['class' => 'my-class'],
+            ['class' => 'container']
         );
 
         $field = $form->getField('country');
@@ -97,7 +102,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(count($subgroups[2]->getFields()) === 0);
         $this->assertTrue(count($subgroups[2]->getGroups()[0]->getFields()) === 1);
     }
-    
+
     public function testFromConfig()
     {
         $form = \Laasti\Form\FormFactory::createFromConfig(require 'config.php');
@@ -107,5 +112,4 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(count($form->getGroups()) === 1);
         $this->assertEquals($form->getGroups()[0]->getLabel(), 'Main section');
     }
-
 }
