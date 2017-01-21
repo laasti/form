@@ -29,8 +29,16 @@ class Form
         $this->formAttributes = new Attributes();
     }
 
-    public function addField($type, $name, $label = null, $choices = [], $group = null, $attributes = [], $containerAttributes = [], $html = null)
-    {
+    public function addField(
+        $type,
+        $name,
+        $label = null,
+        $choices = [],
+        $group = null,
+        $attributes = [],
+        $containerAttributes = [],
+        $html = null
+    ) {
         if ($type === 'file') {
             $this->fileFields[] = $name;
         }
@@ -38,11 +46,66 @@ class Form
             throw new \RuntimeException('The field "' . $name . '" is already defined.');
         }
         $group = is_null($group) ? self::DEFAULT_GROUP : $group;
-        $this->fields[$name] = new Field($type, $name, $label, $choices, $group, $attributes, $containerAttributes, $html);
+        $this->fields[$name] = new Field($type, $name, $label, $choices, $group, $attributes, $containerAttributes,
+            $html);
         $this->fields[$name]->setValue($this->getData($name));
         $this->fields[$name]->setErrors($this->getErrors($name));
         $this->setGroup($name, $group);
 
+        return $this;
+    }
+
+    public function getData($fieldname = null)
+    {
+        if (!is_null($fieldname)) {
+            $keys = $this->convertToKeys($fieldname);
+            $data = $this->data;
+            foreach ($keys as $key) {
+                if (isset($data[$key])) {
+                    $data = $data[$key];
+                } else {
+                    return null;
+                }
+            }
+            return $data;
+        }
+        return $this->data;
+    }
+
+    public function setData($data)
+    {
+        $this->data = $data;
+        foreach ($data as $fieldname => $fielddata) {
+            if (isset($this->fields[$fieldname])) {
+                $this->fields[$fieldname]->setValue($fielddata);
+            }
+        }
+        return $this;
+    }
+
+    protected function convertToKeys($field)
+    {
+        $matches = [];
+        preg_match_all('#\[?([^\[\]]+)\]?#', $field, $matches);
+        return $matches[1];
+    }
+
+    public function getErrors($fieldname = null)
+    {
+        if (!is_null($fieldname)) {
+            return isset($this->errors[$fieldname]) ? $this->errors[$fieldname] : null;
+        }
+        return $this->errors;
+    }
+
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
+        foreach ($errors as $fieldname => $fielderrors) {
+            if (isset($this->fields[$fieldname])) {
+                $this->fields[$fieldname]->setErrors($fielderrors);
+            }
+        }
         return $this;
     }
 
@@ -57,6 +120,18 @@ class Form
         //Add to new group
         $this->fields[$fieldname]->setGroup($group);
         $this->groups[$group]->addField($this->fields[$fieldname]);
+
+        return $this;
+    }
+
+    public function defineGroup($group, $label, $attributes = [])
+    {
+        if (isset($this->groups[$group])) {
+            $this->groups[$group]->setLabel($label);
+            $this->groups[$group]->setAttributes($attributes);
+        } else {
+            $this->groups[$group] = new Group($group, $label, $attributes);
+        }
 
         return $this;
     }
@@ -198,18 +273,6 @@ class Form
         return $this;
     }
 
-    public function defineGroup($group, $label, $attributes = [])
-    {
-        if (isset($this->groups[$group])) {
-            $this->groups[$group]->setLabel($label);
-            $this->groups[$group]->setAttributes($attributes);
-        } else {
-            $this->groups[$group] = new Group($group, $label, $attributes);
-        }
-
-        return $this;
-    }
-
     public function getAllFields()
     {
         return array_values($this->fields);
@@ -227,7 +290,7 @@ class Form
     {
         return isset($this->groups[self::DEFAULT_GROUP]) ? array_values($this->groups[self::DEFAULT_GROUP]->getFields()) : [];
     }
-    
+
     public function getGroups()
     {
         if (is_null($this->groupsLayout)) {
@@ -240,101 +303,6 @@ class Form
         return array_values($this->rootGroups);
     }
 
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    public function getFormAttributes()
-    {
-        if (count($this->fileFields)) {
-            $this->formAttributes->setAttribute('enctype', 'multipart/form-data');
-        }
-        return $this->formAttributes;
-    }
-
-    public function getData($fieldname = null)
-    {
-        if (!is_null($fieldname)) {
-            $keys = $this->convertToKeys($fieldname);
-            $data = $this->data;
-            foreach ($keys as $key) {
-                if (isset($data[$key])) {
-                    $data = $data[$key];
-                } else {
-                    return null;
-                }
-            }
-            return $data;
-        }
-        return $this->data;
-    }
-
-    public function getErrors($fieldname = null)
-    {
-        if (!is_null($fieldname)) {
-            return isset($this->errors[$fieldname]) ? $this->errors[$fieldname] : null;
-        }
-        return $this->errors;
-    }
-
-    public function setMethod($method)
-    {
-        $this->method = $method;
-        return $this;
-    }
-
-    public function setAction($action)
-    {
-        $this->action = $action;
-        return $this;
-    }
-
-    public function setFormAttribute($attribute, $value)
-    {
-        $this->formAttributes->setAttribute($attribute, $value);
-        return $this;
-    }
-
-    public function removeFormAttribute($attribute)
-    {
-        $this->formAttributes->removeAttribute($attribute);
-        return $this;
-    }
-
-    public function setFormAttributes($attributes)
-    {
-        $this->formAttributes->setAttributes($attributes);
-        return $this;
-    }
-
-    public function setData($data)
-    {
-        $this->data = $data;
-        foreach ($data as $fieldname => $fielddata) {
-            if (isset($this->fields[$fieldname])) {
-                $this->fields[$fieldname]->setValue($fielddata);
-            }
-        }
-        return $this;
-    }
-
-    public function setErrors($errors)
-    {
-        $this->errors = $errors;
-        foreach ($errors as $fieldname => $fielderrors) {
-            if (isset($this->fields[$fieldname])) {
-                $this->fields[$fieldname]->setErrors($fielderrors);
-            }
-        }
-        return $this;
-    }
-
     protected function arrangeGroupsByLayout()
     {
         if (is_null($this->groupsLayout)) {
@@ -342,13 +310,12 @@ class Form
         }
 
         foreach ($this->groupsLayout as $key => $value) {
-
             $group = is_string($value) ? $value : $key;
             $subgroups = is_array($value) ? $value : [];
 
             if (!isset($this->groups[$group]) && count($subgroups) === 0) {
                 continue;
-            } else if (!isset($this->groups[$group])) {
+            } elseif (!isset($this->groups[$group])) {
                 $this->defineGroup($group, '');
             }
 
@@ -368,7 +335,7 @@ class Form
 
             if (!isset($this->groups[$group]) && count($subgroups) === 0) {
                 continue;
-            } else if (!isset($this->groups[$group])) {
+            } elseif (!isset($this->groups[$group])) {
                 $this->defineGroup($group, '');
             }
 
@@ -380,11 +347,52 @@ class Form
         }
     }
 
-    protected function convertToKeys($field)
+    public function getMethod()
     {
-        $matches = [];
-        preg_match_all('#\[?([^\[\]]+)\]?#', $field, $matches);
-        return $matches[1];
+        return $this->method;
+    }
+
+    public function setMethod($method)
+    {
+        $this->method = $method;
+        return $this;
+    }
+
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    public function setAction($action)
+    {
+        $this->action = $action;
+        return $this;
+    }
+
+    public function getFormAttributes()
+    {
+        if (count($this->fileFields)) {
+            $this->formAttributes->setAttribute('enctype', 'multipart/form-data');
+        }
+        return $this->formAttributes;
+    }
+
+    public function setFormAttributes($attributes)
+    {
+        $this->formAttributes->setAttributes($attributes);
+        return $this;
+    }
+
+    public function setFormAttribute($attribute, $value)
+    {
+        $this->formAttributes->setAttribute($attribute, $value);
+        return $this;
+    }
+
+    public function removeFormAttribute($attribute)
+    {
+        $this->formAttributes->removeAttribute($attribute);
+        return $this;
     }
 
     public function __isset($name)
@@ -400,5 +408,4 @@ class Form
 
         return null;
     }
-
 }

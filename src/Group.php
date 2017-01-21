@@ -40,15 +40,21 @@ class Group
         return $this;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
     public function removeGroup($groupname)
     {
         unset($this->groups[$groupname]);
         return $this;
-    }
-
-    public function getName()
-    {
-        return $this->name;
     }
 
     public function getLabel()
@@ -56,9 +62,21 @@ class Group
         return $this->label;
     }
 
+    public function setLabel($label)
+    {
+        $this->label = $label;
+        return $this;
+    }
+
     public function getAttributes()
     {
         return $this->attributes;
+    }
+
+    public function setAttributes($attributes)
+    {
+        $this->attributes->setAttributes($attributes);
+        return $this;
     }
 
     public function getFields()
@@ -71,33 +89,15 @@ class Group
         return array_values($this->groups);
     }
 
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function setLabel($label)
-    {
-        $this->label = $label;
-        return $this;
-    }
-
     public function setAttribute($attribute, $value)
     {
         $this->attributes->setAttribute($attribute, $value);
         return $this;
     }
-    
+
     public function removeAttribute($attribute)
     {
         $this->attributes->removeAttribute($attribute);
-        return $this;
-    }
-
-    public function setAttributes($attributes)
-    {
-        $this->attributes->setAttributes($attributes);
         return $this;
     }
 

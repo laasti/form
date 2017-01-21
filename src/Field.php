@@ -22,8 +22,16 @@ class Field
     protected $containerAttributes;
     protected $factoryClass = 'Laasti\Form\ElementsGenerator';
 
-    public function __construct($type, $name, $label, $choices = [], $group = null, $attributes = [], $containerAttributes = [], $html = null)
-    {
+    public function __construct(
+        $type,
+        $name,
+        $label,
+        $choices = [],
+        $group = null,
+        $attributes = [],
+        $containerAttributes = [],
+        $html = null
+    ) {
         $this->type = $type;
         $this->name = $name;
         $this->label = $label;
@@ -35,19 +43,15 @@ class Field
         //$this->containerAttributes->setAttribute('class', 'form-field form-field-'.$type);
     }
 
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
     public function getLabel()
     {
         return $this->label;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
+        return $this;
     }
 
     public function getGroup()
@@ -55,9 +59,21 @@ class Field
         return $this->group;
     }
 
+    public function setGroup($group)
+    {
+        $this->group = $group;
+        return $this;
+    }
+
     public function getHtml()
     {
         return $this->hmtl;
+    }
+
+    public function setHtml($html)
+    {
+        $this->html = $html;
+        return $this;
     }
 
     public function getAttributes()
@@ -66,14 +82,29 @@ class Field
         return $this->attributes;
     }
 
+    public function setAttributes($attributes)
+    {
+        $this->attributes->setAttributes($attributes);
+        return $this;
+    }
+
+    public function getId()
+    {
+        if (!isset($this->attributes['id'])) {
+            $this->attributes['id'] = str_replace('.', '-', uniqid(str_replace(['[', ']'], '_', $this->name), true));
+        }
+        return $this->attributes['id'];
+    }
+
     public function getContainerAttributes()
     {
         return $this->containerAttributes;
     }
 
-    public function getChoices()
+    public function setContainerAttributes($containerAttributes)
     {
-        return $this->choices;
+        $this->containerAttributes->setAttributes($containerAttributes);
+        return $this;
     }
 
     public function getValue()
@@ -81,9 +112,29 @@ class Field
         return $this->value;
     }
 
+    public function setValue($value)
+    {
+        $this->value = is_array($value) ? $value : htmlspecialchars((string)$value, ENT_QUOTES);
+        return $this;
+    }
+
     public function getControl()
     {
-        return !is_null($this->html) ? $this->html : call_user_func_array([$this->factoryClass, 'render'.ucfirst($this->getType())], [$this]);
+        return !is_null($this->html) ? $this->html : call_user_func_array([
+            $this->factoryClass,
+            'render' . ucfirst($this->getType())
+        ], [$this]);
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
     }
 
     public function getError()
@@ -102,12 +153,34 @@ class Field
 
     public function hasFakeLabel()
     {
-        return in_array($this->getType(), ['radio']) || ($this->getType() === 'checkbox' && count($this->getChoices()) > 1);
+        return in_array($this->getType(),
+                ['radio']) || ($this->getType() === 'checkbox' && count($this->getChoices()) > 1);
+    }
+
+    public function getChoices()
+    {
+        return $this->choices;
+    }
+
+    public function setChoices($choices)
+    {
+        $this->choices = $choices;
+        return $this;
     }
 
     public function hasLabel()
     {
-        return !in_array($this->getType(), ['hidden', 'reset', 'submit', 'button', 'image', 'meter', 'progress', 'radio','checkbox']) || ($this->getType() === 'checkbox' && count($this->getChoices()) < 2);
+        return !in_array($this->getType(), [
+                'hidden',
+                'reset',
+                'submit',
+                'button',
+                'image',
+                'meter',
+                'progress',
+                'radio',
+                'checkbox'
+            ]) || ($this->getType() === 'checkbox' && count($this->getChoices()) < 2);
     }
 
     public function hasNoLabel()
@@ -120,12 +193,10 @@ class Field
         return $this->errors;
     }
 
-    public function getId()
+    public function setErrors($errors)
     {
-        if (!isset($this->attributes['id'])) {
-            $this->attributes['id'] = str_replace('.', '-', uniqid(str_replace(['[', ']'], '_', $this->name), true));
-        }
-        return  $this->attributes['id'];
+        $this->errors = $errors;
+        return $this;
     }
 
     public function getFactoryClass()
@@ -136,55 +207,6 @@ class Field
     public function setFactoryClass($factoryClass)
     {
         $this->factoryClass = $factoryClass;
-        return $this;
-    }
-
-    
-    public function setErrors($errors)
-    {
-        $this->errors = $errors;
-        return $this;
-    }
-
-    public function setValue($value)
-    {
-        $this->value = is_array($value) ? $value : htmlspecialchars((string)$value, ENT_QUOTES);
-        return $this;
-    }
-
-    
-    public function setChoices($choices)
-    {
-        $this->choices = $choices;
-        return $this;
-    }
-
-    public function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
-    public function setHtml($html)
-    {
-        $this->html = $html;
-        return $this;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function setLabel($label)
-    {
-        $this->label = $label;
-        return $this;
-    }
-
-    public function setGroup($group)
-    {
-        $this->group = $group;
         return $this;
     }
 
@@ -200,12 +222,6 @@ class Field
         return $this;
     }
 
-    public function setAttributes($attributes)
-    {
-        $this->attributes->setAttributes($attributes);
-        return $this;
-    }
-
     public function setContainerAttribute($attribute, $value)
     {
         $this->containerAttributes->setAttribute($attribute, $value);
@@ -218,30 +234,35 @@ class Field
         return $this;
     }
 
-    public function setContainerAttributes($containerAttributes)
-    {
-        $this->containerAttributes->setAttributes($containerAttributes);
-        return $this;
-    }
-
     public function __isset($name)
     {
-        return method_exists($this, 'get' . ucfirst($name)) || in_array($name, ['isRequired', 'is'.  ucfirst($this->getType()), 'is'.  ucfirst($this->getName())]);
+        return method_exists($this, 'get' . ucfirst($name)) || in_array($name,
+                ['isRequired', 'is' . ucfirst($this->getType()), 'is' . ucfirst($this->getName())]);
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 
     public function __get($name)
     {
         if (method_exists($this, 'get' . ucfirst($name))) {
             return call_user_func([$this, 'get' . ucfirst($name)]);
-        } else if ($name === 'isRequired') {
+        } elseif ($name === 'isRequired') {
             return isset($this->attributes['required']);
-        } else if (lcfirst(str_replace('is', '', $name)) === $this->getType()) {
+        } elseif (lcfirst(str_replace('is', '', $name)) === $this->getType()) {
             return true;
-        } else if (lcfirst(str_replace('is', '', $name)) === $this->getName()) {
+        } elseif (lcfirst(str_replace('is', '', $name)) === $this->getName()) {
             return true;
         }
 
         return null;
     }
-
 }

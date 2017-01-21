@@ -19,7 +19,8 @@ return [
             'default' => 'no test',
             'group' => 'main',
             'choices' => [
-                'Test', 'Test 2'
+                'Test',
+                'Test 2'
             ],
             'attributes' => [
                 'class' => 'my-class'
